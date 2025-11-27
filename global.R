@@ -286,7 +286,7 @@ load_catalogs <- function(){
   }
   
   servicios <- {
-    tmp <- try(load_pe_from_excel(n_max = 10), silent = TRUE)
+    tmp <- try(load_pe_from_excel(), silent = TRUE)
     if (inherits(tmp, "try-error") || is.null(tmp) || (is.data.frame(tmp) && nrow(tmp) == 0)) {
       safe_read(f_servicios)
     } else tmp
