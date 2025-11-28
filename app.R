@@ -172,8 +172,7 @@ ui <-  dashboardPage(
                     checkboxInput("m_pers_activo", "Activo", value = TRUE),
                     shinyjs::hidden(textInput("m_pers_id", label = NULL)),
                     actionButton("m_btn_guardar", "Guardar / Actualizar", icon = icon("save"), class = "btn btn-success"),
-                    actionButton("m_btn_nuevo", "Nuevo", icon = icon("plus"), class = "btn btn-default"),
-                    actionButton("m_btn_toggle", "Activar/Desactivar", icon = icon("user-slash"), class = "btn btn-warning"))
+                    )
               ),
               fluidRow(
                 box(width = 6, title = "Tipos / Sectores", status = "primary", solidHeader = TRUE,
@@ -256,7 +255,7 @@ ui <-  dashboardPage(
           <span class="uso-badge">Rutinas</span>.
         </li>
         <li>Los cambios se reflejan automáticamente en los selectores de Carga de horas.</li>
-        <li class="uso-small">Si los archivos de red no están disponibles, la app usa los CSV locales en <code>data/</code>.</li>
+     
       </ul>
 
       <hr>
@@ -688,16 +687,98 @@ server <- function(input, output, session){
     DT::datatable(df, selection = "single", options = list(pageLength = 7), rownames = FALSE)
   })
   
+  # >>> Maestros: al seleccionar una fila en "Personal", rellenar el formulario
   observeEvent(input$cat_personal_rows_selected, {
-    idx <- input$cat_personal_rows_selected; req(length(idx) == 1)
+    idx <- input$cat_personal_rows_selected
+    req(length(idx) == 1)
+    
     row <- cats()$personal[idx, , drop = FALSE]
-    updateTextInput(   session, "m_pers_nombre",   value = row$persona)
-    updateSelectInput( session, "m_pers_sector",   selected = row$sector_id)
-    updateNumericInput(session, "m_pers_jornada",  value = as.numeric(row$jornada_hs))
-    updateNumericInput(session, "m_pers_vac",      value = as.numeric(row$vacaciones_anuales))
-    updateCheckboxInput(session, "m_pers_activo",  value = isTRUE(row$activo))
+    
+    # Campos esperados en cats()$personal:
+    # persona_id, persona, sector_id, almuerza, jornada_hs, vacaciones_anuales, activo
+    
+    updateTextInput(   session, "m_pers_nombre",    value = row$persona)
+    updateSelectInput( session, "m_pers_sector",    selected = row$sector_id)
+    # updateCheckboxInput(session, "m_pers_almuerza", value = isTRUE(row$almuerza))
+    updateNumericInput(session, "m_pers_jornada",   value = as.numeric(row$jornada_hs))
+    updateNumericInput(session, "m_pers_vac",       value = as.numeric(row$vacaciones_anuales))
+    updateCheckboxInput(session, "m_pers_activo",   value = isTRUE(row$activo))
+    
+    # Guardar el ID oculto para saber qué registro editar
     updateTextInput(session, "m_pers_id", value = as.character(row$persona_id))
   }, ignoreInit = TRUE)
+  
+  output$cat_tipos  <- DT::renderDT({
+    df <- cats()$tipos
+    if (nrow(df) == 0) {
+      return(DT::datatable(
+        tibble(mensaje = "Sin datos"),
+        options = list(dom = 't'),
+        rownames = FALSE
+      ))
+    }
+    DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)
+  })
+  
+  output$cat_sectores  <- DT::renderDT({
+    df <- cats()$sectores
+    if (nrow(df) == 0) {
+      return(DT::datatable(
+        tibble(mensaje = "Sin datos"),
+        options = list(dom = 't'),
+        rownames = FALSE
+      ))
+    }
+    DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)
+  })
+  
+  output$cat_proyectos <- DT::renderDT({
+    df <- cats()$proyectos
+    if (nrow(df) == 0) {
+      return(DT::datatable(
+        tibble(mensaje = "Sin datos"),
+        options = list(dom = 't'),
+        rownames = FALSE
+      ))
+    }
+    DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)
+  })
+  
+  output$cat_servicios <- DT::renderDT({
+    df <- cats()$servicios
+    if (nrow(df) == 0) {
+      return(DT::datatable(
+        tibble(mensaje = "Sin datos"),
+        options = list(dom = 't'),
+        rownames = FALSE
+      ))
+    }
+    DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)
+  })
+  
+  output$cat_sm        <- DT::renderDT({
+    df <- cats()$sm
+    if (nrow(df) == 0) {
+      return(DT::datatable(
+        tibble(mensaje = "Sin datos"),
+        options = list(dom = 't'),
+        rownames = FALSE
+      ))
+    }
+    DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)
+  })
+  
+  output$cat_rutinas   <- DT::renderDT({
+    df <- cats()$rutinas
+    if (nrow(df) == 0) {
+      return(DT::datatable(
+        tibble(mensaje = "Sin datos"),
+        options = list(dom = 't'),
+        rownames = FALSE
+      ))
+    }
+    DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)
+  })
   
   output$cat_tipos     <- DT::renderDT({ df <- cats()$tipos;     if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
   output$cat_sectores  <- DT::renderDT({ df <- cats()$sectores;  if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
@@ -706,6 +787,42 @@ server <- function(input, output, session){
   output$cat_sm        <- DT::renderDT({ df <- cats()$sm;        if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
   output$cat_rutinas   <- DT::renderDT({ df <- cats()$rutinas;   if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
   
+  observeEvent(input$m_btn_guardar, {
+    req(input$m_pers_nombre, input$m_pers_sector, input$m_pers_jornada, input$m_pers_vac)
+    
+    df <- cats()$personal
+    
+    if (nzchar(input$m_pers_id)) {
+      # modificar existente
+      pid <- as.integer(input$m_pers_id)
+      df <- df %>%
+        dplyr::mutate(
+          persona            = ifelse(persona_id == pid, input$m_pers_nombre, persona),
+          sector_id          = ifelse(persona_id == pid, as.integer(input$m_pers_sector), sector_id),
+          jornada_hs         = ifelse(persona_id == pid, as.numeric(input$m_pers_jornada), jornada_hs),
+          vacaciones_anuales = ifelse(persona_id == pid, as.numeric(input$m_pers_vac), vacaciones_anuales),
+          activo             = ifelse(persona_id == pid, isTRUE(input$m_pers_activo), activo)
+        )
+    } else {
+      # alta nueva
+      new_id <- ifelse(nrow(df) > 0, max(df$persona_id, na.rm = TRUE) + 1L, 1L)
+      nuevo <- tibble::tibble(
+        persona_id         = new_id,
+        persona            = input$m_pers_nombre,
+        sector_id          = as.integer(input$m_pers_sector),
+        jornada_hs         = as.numeric(input$m_pers_jornada),
+        vacaciones_anuales = as.numeric(input$m_pers_vac),
+        activo             = isTRUE(input$m_pers_activo)
+      )
+      df <- dplyr::bind_rows(df, nuevo)
+      updateTextInput(session, "m_pers_id", value = as.character(new_id))
+    }
+    
+    save_overwrite(df, f_personal)   # definida en global.R
+    cats(load_catalogs())            # recarga catálogos desde disco
+    DT::replaceData(proxy_pers, cats()$personal, resetPaging = FALSE)
+    showNotification("Personal guardado/actualizado", type = "message")
+  })
   
 }
 

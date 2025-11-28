@@ -1,7 +1,7 @@
 persona_id,persona,sector_id,jornada_hs,vacaciones_anuales,activo
-1,Tomás Del Bó,1,8.5,14,TRUE
+1,Tomás Del Bó,1,8.5,21,TRUE
 2,Marcos Masetro,1,8.5,14,TRUE
-3,Federico Dutruel,2,8.5,14,TRUE
+3,Federico Dutruel,2,8.5,28,TRUE
 4,Alfredo Betti,3,8.5,14,TRUE
 5,Leonel Rodriguez,3,8.5,14,TRUE
 6,Martín Tamone,2,8.5,14,TRUE
