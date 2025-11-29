@@ -779,14 +779,14 @@ server <- function(input, output, session){
     }
     DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)
   })
-  
-  output$cat_tipos     <- DT::renderDT({ df <- cats()$tipos;     if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
-  output$cat_sectores  <- DT::renderDT({ df <- cats()$sectores;  if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
-  output$cat_proyectos <- DT::renderDT({ df <- cats()$proyectos; if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
-  output$cat_servicios <- DT::renderDT({ df <- cats()$servicios; if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
-  output$cat_sm        <- DT::renderDT({ df <- cats()$sm;        if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
-  output$cat_rutinas   <- DT::renderDT({ df <- cats()$rutinas;   if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
-  
+  # 
+  # output$cat_tipos     <- DT::renderDT({ df <- cats()$tipos;     if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
+  # output$cat_sectores  <- DT::renderDT({ df <- cats()$sectores;  if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
+  # output$cat_proyectos <- DT::renderDT({ df <- cats()$proyectos; if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
+  # output$cat_servicios <- DT::renderDT({ df <- cats()$servicios; if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
+  # output$cat_sm        <- DT::renderDT({ df <- cats()$sm;        if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
+  # output$cat_rutinas   <- DT::renderDT({ df <- cats()$rutinas;   if (nrow(df) == 0) return(DT::datatable(tibble(mensaje = "Sin datos"), options = list(dom='t'), rownames = FALSE)); DT::datatable(df, options = list(pageLength = 5), rownames = FALSE)})
+  # 
   observeEvent(input$m_btn_guardar, {
     req(input$m_pers_nombre, input$m_pers_sector, input$m_pers_jornada, input$m_pers_vac)
     
